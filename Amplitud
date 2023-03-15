@@ -1,0 +1,36 @@
+from collections import deque
+# Función que realiza la búsqueda en profundidad
+def depth_first_search(graph, node, goal, visited):
+    if node == goal:
+        return True
+    
+    visited.add(node)
+    
+# Definimos la lista de juegos y sus conexiones
+Obras = {}
+
+# Añadir los nodos del grafo (juegos de Mario)
+Obras['Marques de Sade'] = ['Lujuria','Sadismo','Sociedad','Impunidad','Fetiches','Placeres','Clive Barker']
+Obras['Kiev Tolstoi'] = ['Suerte','Multifacetico','Historia','Reflexion','Filosfia','Impunidad','Becca Fitzpatrick']
+Obras['Homero'] = ['Batalla', 'Dioses', 'Historia','Fantasia','Heroes','Olga Lengiel']
+Obras['Olga Lengiel'] = ['Impotencia','Abusos','Precario','Impunidad','Inhumano','Miedo','Kiev Tolstoi']
+Obras['Clive Barker'] = ['Drama','Miedo','Obseno','Hermoso','Lujuria','Olga Lengiel']
+Obras['Becca Fitzpatrick'] = ['Amor','Incondicional','Angeles','Dioses','Homero']
+def bfs(graph, start, end):
+    queue = deque()
+    queue.append((start, [start]))
+
+    while queue:
+        node, path = queue.popleft()
+        if node == end:
+            return path
+
+        for neighbor in graph.get(node, []):
+            if neighbor not in path:
+                queue.append((neighbor, path + [neighbor]))
+    return None
+if __name__ == '__main__':
+    token = str(input('Que tipo de novela te gustaria leer?\n(Miedo, Drama, Etc)\n'))
+path = bfs(Obras, 'Marques de Sade', token)
+x = len(path)
+print('Te recomiendo buscar libros del autor:',path[x-2])
