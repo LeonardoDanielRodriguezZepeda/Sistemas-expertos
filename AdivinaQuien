@@ -1,0 +1,333 @@
+import mysql.connector
+from mysql.connector import errorcode
+
+class adivinaquien:
+   
+   
+   def __init__(self):
+      self.conexion = mysql.connector.connect(host = "localhost", user = "root", password = "Red21Neuronal", database = "juegodemesa")
+      self.cursor = self.conexion.cursor()
+      #self.raiz = self.construir_arbol()
+   
+   def __del__(self):
+       print("Destruido")
+
+   def NewChar(self):
+      try:
+         #conexion = mysql.connector.connect(host = "localhost", user = "root", password = "Red21Neuronal", database = "juegodemesa" ) 
+         #cursor = conexion.cursor()
+         #nombre_bd = self.conexion.database
+         sentencia = ("INSERT INTO juegos (idj, nombre, ojos, pelo, piel, raza )" "VALUES (%s, %s, %s, %s, %s, %s)")
+         nameChar = input("\nDame el nombre de tu personaje\n")
+         eyeColor= input("\nDame el color de ojos de tu personaje\n")
+         hairColor= input("\nDame el color de pelo de tu personaje\n")
+         skinColor= input("\nDame el color de piel de tu personaje\n")
+         breed = input("\nDame la nacionalidad de tu personaje\n")
+         self.cursor.execute("SELECT COUNT(*) FROM juegos;")
+         records = self.cursor.fetchone()
+         record = int(records[0])
+         eyelist = []
+         hairlist = []
+         skinlist = []
+         breedlist= []
+         namelist = []
+         idlist = []
+         self.cursor.execute("SELECT*FROM juegos")
+         characters = self.cursor.fetchall() #Recupera los datos de la consulta en una lista, donde tenemos n cantidad de personajes y cada uno tiene 6 atributos de 0-5 
+         y = len(characters)
+         no=True 
+         print(characters,y,record)
+         for x in range(record):                      #(sabemos cuantos personajes hay)
+            for xx in range(4):                       #(#personajes)Nos importa contar cuantos atributos hay de cada uno y sacar el que mas probabilidad tenga solo nos importa saber de 2-5 para cada personaje
+               counter = xx-4   
+               if(xx == 0): idlist.append(characters[x][xx])
+               if(xx == 1): namelist.append(characters[x][xx])
+               if(counter == -1): breedlist.append(characters[x][counter])
+               if(counter == -2): skinlist.append(characters[x][counter])
+               if(counter == -3): hairlist.append(characters[x][counter])
+               if(counter == -4): eyelist.append(characters[x][counter])
+         print(breedlist)
+         for x in range(record):
+            for xx in range(y):
+               counter = xx-4
+               print(x,xx)
+               if(nameChar == namelist[xx]) and (breed == breedlist[xx]) and (skinColor == skinlist[xx]) and (hairColor == hairlist[xx]) and (eyeColor == eyelist[xx]):
+                  print("Datos invalidos: Personaje repetido")
+                  no = False
+                  break
+            if(nameChar == namelist[xx]) and (breed == breedlist[xx]) and (skinColor == skinlist[xx]) and (hairColor == hairlist[xx]) and (eyeColor == eyelist[xx]):
+               print("Datos invalidos: Personaje repetido")
+               break   
+         nameChar = nameChar.capitalize() 
+         eyeColor = eyeColor.capitalize() 
+         hairColor= hairColor.capitalize() 
+         skinColor= skinColor.capitalize() 
+         breed = breed.capitalize()
+         datos = (record,nameChar, eyeColor, hairColor, skinColor, breed)
+         if(no == True):
+            self.cursor.execute(sentencia,datos)
+         #print('Ok ',nombre_bd)
+         self.conexion.commit()
+         #cursor.execute("INSERT INTO juegos (0111, Leo, cafes, negro, Blanco, Mexicano ) VALUES (idj, nombre, ojos, pelo, piel, raza)")
+         self.cursor.close()
+         self.conexion.close()
+      except mysql.connector.Error as err:
+         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+               print("Something went wrong")
+         elif err.errno == errorcode.ER_BAD_DB_ERROR:
+               print("Database doesnt exist")
+         else:
+            print(err)
+      else:
+         if(no==True):
+            print("Nuevo personaje agregado con exito")
+         else:
+            print("Peronaje Repetido")
+
+   def preguntas(self):
+      self.cursor.execute("SELECT COUNT(*) FROM juegos;")
+      records = self.cursor.fetchone()
+      record = int(records[0])
+      eyelist = []
+      hairlist = []
+      skinlist = []
+      breedlist= []
+      namelist = []
+      idlist = []
+      self.cursor.execute("SELECT*FROM juegos")
+      characters = self.cursor.fetchall() #Recupera los datos de la consulta en una lista, donde tenemos n cantidad de personajes y cada uno tiene 6 atributos de 0-5 
+      y = len(characters) 
+      print(characters,y,records)
+      for x in range(record):                      #(sabemos cuantos personajes hay)
+         for xx in range(4):                       #(#personajes)Nos importa contar cuantos atributos hay de cada uno y sacar el que mas probabilidad tenga solo nos importa saber de 2-5 para cada personaje
+            counter = xx-4 
+            print(xx,counter,y)  
+            if(xx == 0): idlist.append(characters[x][xx])
+            if(xx == 1): namelist.append(characters[x][xx])
+            if(counter == -1): breedlist.append(characters[x][counter])
+            if(counter == -2): skinlist.append(characters[x][counter])
+            if(counter == -3): hairlist.append(characters[x][counter])
+            if(counter == -4): eyelist.append(characters[x][counter])
+      print(breedlist,y)
+      C = True
+      while(C):
+         a = 0
+         b=0
+         answer=""
+         for x in range(record):
+            b=x
+            if(len(eyelist)!=record):
+                C=False
+            eyeans=input("Tu personaje tiene ojos de color "+eyelist[x])
+            print(x,record)
+            if(x==record-1):
+               answer = input("\nEl color que deseas no esta:\nTeg gustaria introducir un nuevo personaje?")
+               if(answer == 'si') or (answer == 'Si'):
+                  self.NewChar()
+                  break
+            if(answer == 'si') or (answer == 'Si'):
+                  self.NewChar()
+                  break   
+            if(eyeans=='Si') or (eyeans=='si'):
+               for xx in range(y):
+                  sies = eyelist[b] 
+                  print(eyelist,a,xx,x,b)
+                  if(eyelist[b]!=eyelist[a]):
+                     del idlist[a]
+                     del namelist[a]
+                     del eyelist[a]
+                     del hairlist[a]
+                     del skinlist[a]
+                     del breedlist[a]
+                     print(eyelist,a,xx,x,b,record)
+                     a=a-1
+                     yy = len(eyelist)
+                     for n in range(yy):
+                        if(eyelist[n]==sies):
+                            b=n
+                     if(len(eyelist)==1):
+                        break 
+                     
+                    
+                  a = a+1
+                  if(len(eyelist)==1):
+                     break 
+               if(len(eyelist)==1):
+                  break
+            if(len(eyelist)==1):
+               break             
+         if(len(eyelist)==1):
+             break
+      C = True
+      while(C):
+         a = 0
+         b=0
+         x=0
+         xx=0
+         for x in range(record):
+            b=x
+            if(len(hairlist)!=record):
+                C = False
+            hairans=input("Tu personaje el pelo de color "+hairlist[x])
+            if(x==record-1):
+               answer = input("\nEl color que deseas no esta:\nTeg gustaria introducir un nuevo personaje?")
+               if(answer == 'si') or (answer == 'Si'):
+                  self.NewChar()
+                  break
+            if(answer == 'si') or (answer == 'Si'):
+                  self.NewChar()
+                  break  
+            if(hairans=='Si') or (hairans=='si'):
+               for xx in range(y):
+                  sies = hairlist[b] 
+                  print(hairlist,a,xx,x,b)
+                  if(hairlist[b]!=hairlist[a]):
+                     del idlist[a]
+                     del namelist[a]
+                     del eyelist[a]
+                     del hairlist[a]
+                     del skinlist[a]
+                     del breedlist[a]
+                     print(hairlist,a,xx,x,b,record)
+                     a=a-1
+                     yy = len(hairlist)
+                     for n in range(yy):
+                        if(hairlist[n]==sies):
+                            b=n
+                     if(len(hairlist)==1):
+                        break 
+                     
+                    
+                  a = a+1
+                  if(len(hairlist)==1):
+                     break 
+               if(len(hairlist)==1):
+                  break
+            if(len(hairlist)==1):
+               break             
+         if(len(hairlist)==1):
+             break
+      C = True
+      while(C):
+         a = 0
+         b=0
+         x=0
+         xx=0
+         for x in range(record):
+            b=x
+            if(len(skinlist)!=record):
+                C = False
+            skinans=input("Tu personaje la piel de color "+skinlist[x])
+            if(x==record-1):
+               answer = input("\nEl color que deseas no esta:\nTeg gustaria introducir un nuevo personaje?")
+               if(answer == 'si') or (answer == 'Si'):
+                  self.NewChar()
+                  break
+            if(answer == 'si') or (answer == 'Si'):
+                  self.NewChar()
+                  break  
+            if(skinans=='Si') or (skinans=='si'):
+               for xx in range(y):
+                  sies = skinlist[b] 
+                  print(skinlist,a,xx,x,b)
+                  if(skinlist[b]!=skinlist[a]):
+                     del idlist[a]
+                     del namelist[a]
+                     del eyelist[a]
+                     del hairlist[a]
+                     del skinlist[a]
+                     del breedlist[a]
+                     print(skinlist,a,xx,x,b,record)
+                     a=a-1
+                     yy = len(skinlist)
+                     for n in range(yy):
+                        if(skinlist[n]==sies):
+                            b=n
+                     if(len(skinlist)==1):
+                        break 
+                     
+                    
+                  a = a+1
+                  if(len(skinlist)==1):
+                     break 
+               if(len(skinlist)==1):
+                  break
+            if(len(skinlist)==1):
+               break             
+         if(len(skinlist)==1):
+             break
+         
+      C = True
+      while(C):
+         a = 0
+         b=0
+         x=0
+         xx=0
+         for x in range(record):
+            b=x
+            if(len(breedlist)!=record):
+                C = False
+            breedans=input("Tu personaje es de nacionalidad "+breedlist[x])
+            if(x==record-1):
+               answer = input("\nEl color que deseas no esta:\nTeg gustaria introducir un nuevo personaje?")
+               if(answer == 'si') or (answer == 'Si'):
+                  self.NewChar()
+                  break
+            if(answer == 'si') or (answer == 'Si'):
+                  self.NewChar()
+                  break  
+            if(breedans=='Si') or (breedans=='si'):
+               for xx in range(y):
+                  sies = breedlist[b] 
+                  print(breedlist,a,xx,x,b)
+                  if(breedlist[b]!=breedlist[a]):
+                     del idlist[a]
+                     del namelist[a]
+                     del eyelist[a]
+                     del hairlist[a]
+                     del skinlist[a]
+                     del breedlist[a]
+                     print(breedlist,a,xx,x,b,record)
+                     a=a-1
+                     yy = len(breedlist)
+                     for n in range(yy):
+                        if(breedlist[n]==sies):
+                            b=n
+                     if(len(breedlist)==1):
+                        break 
+                     
+                    
+                  a = a+1
+                  if(len(breedlist)==1):
+                     break 
+               if(len(breedlist)==1):
+                  break
+            if(len(breedlist)==1):
+               break             
+         if(len(breedlist)==1):
+             break
+      print("Tu personaje es: "+namelist[0])             
+
+   def jugar(self):
+      self.cursor.execute("SELECT*FROM juegos")
+      characters = self.cursor.fetchall()
+      x = len(characters)
+      print("\n\t\t\tSelecciona un personaje")
+      for n in range(x):
+         print("Personaje",n,"\n",characters[n])
+      input()
+      self.preguntas()
+      
+
+if __name__ == "__main__":
+   juega = adivinaquien()
+   input("\t\t\t\tBienvenido a jugar, presiona enter para continuar")
+   juega.jugar()
+   again=input("\nDeseas seguir jugando?")
+   again = again.capitalize()
+   if(again=="Si"):
+      juega.jugar()
+   else:
+      print("\n\t\t\t\tHasta la proxima")
+      input("Presiona enter para continuar")
+   
