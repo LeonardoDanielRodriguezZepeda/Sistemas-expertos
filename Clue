@@ -1,0 +1,27 @@
+import random
+
+# Lista de personajes, estancias y armas
+personajes = ['Sr. Verde', 'Sra. Blanca', 'Profesor Ciruela', 'Sr. Azul', 'Sra. Escarlata']
+estancias = ['Comedor', 'Biblioteca', 'Sala de estar', 'Cocina', 'Sótano']
+armas = ['Candelabro', 'Llave inglesa', 'Cuerda', 'Revólver', 'Cuchillo']
+
+# Elegir al azar el personaje, la estancia y el arma del asesinato
+personaje_asesino = random.choice(personajes)
+estancia_asesinato = random.choice(estancias)
+arma_asesinato = random.choice(armas)
+
+# Imprimir las soluciones para verificar que estén bien
+print('El asesinato fue cometido por: ' + personaje_asesino)
+print('El crimen fue cometido en: ' + estancia_asesinato)
+print('El arma usada fue: ' + arma_asesinato)
+
+# Pedirle al usuario que haga una suposición
+suposicion_personaje = input('¿Quién crees que cometió el asesinato?')
+suposicion_estancia = input('¿En qué habitación crees que se cometió el asesinato?')
+suposicion_arma = input('¿Qué arma crees que se usó para el asesinato?')
+
+# Verificar si la suposición es correcta
+if (suposicion_personaje == personaje_asesino) and (suposicion_estancia == estancia_asesinato) and (suposicion_arma == arma_asesinato):
+    print('¡Felicidades! Has descubierto al asesino, la habitación y el arma utilizada.')
+else:
+    print('Lo siento, tu suposición es incorrecta. El asesino, la habitación y el arma utilizada son diferentes a los que has sugerido.')
